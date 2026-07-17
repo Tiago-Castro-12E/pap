@@ -128,4 +128,67 @@ Verificação:
 - o CSS mantém o mesmo número de chavetas de abertura e fecho;
 - PHP e MySQL continuam indisponíveis, pelo que os testes reais permanecem pendentes.
 
-Próxima etapa: `07-votos-e-comentarios.md`.
+## Prompt 07 — Votos e comentários
+
+Estado: **concluído por revisão estática em 17 de julho de 2026**.
+
+- voto alternável dentro de transação e protegido também por restrição única;
+- comentários validados entre 2 e 2000 caracteres;
+- remoção pelo autor do comentário ou administrador;
+- todas as alterações usam POST, CSRF, prepared statements e redirecionamento após sucesso.
+
+## Prompt 08 — Painel administrativo
+
+Estado: **concluído por revisão estática em 17 de julho de 2026**.
+
+- proteção administrativa central em todas as páginas;
+- dashboard com utilizadores, categorias, ideias, votos, comentários e estados;
+- moderação de ideias com filtros e confirmação;
+- gestão de utilizadores e proteção do último administrador ativo;
+- gestão de categorias integrada;
+- nenhuma alteração de dados é realizada por GET.
+
+## Prompt 09 — Contactos e páginas institucionais
+
+Estado: **concluído por revisão estática em 17 de julho de 2026**.
+
+- páginas Sobre e Contactos completas;
+- contacto com validação, CSRF, prepared statement e feedback acessível;
+- tabela `mensagem_contacto` adicionada ao esquema;
+- consulta e marcação como lida exclusiva para administradores;
+- estratégia de armazenamento documentada em `documentacao/contactos.md`.
+
+## Prompt 10 — Segurança, testes e documentação final
+
+Estado: **auditoria estática concluída; execução real pendente em 17 de julho de 2026**.
+
+- revisão global de SQL injection, XSS, CSRF, sessões, permissões, métodos HTTP e erros;
+- headers de segurança básicos adicionados;
+- configuração da base de dados disponível através de variáveis de ambiente;
+- README de instalação e funcionalidades criado;
+- auditoria registada em `documentacao/seguranca.md`;
+- checklist com resultados explicitamente não executados em `documentacao/testes.md`;
+- lista de capturas necessárias criada para o relatório;
+- não existem ficheiros funcionais vazios.
+
+Verificação pendente:
+
+- os executáveis PHP, MySQL e MariaDB não existem neste ambiente;
+- não foi possível validar sintaxe com `php -l`, importar SQL, renderizar páginas ou executar fluxos;
+- o projeto só deve ser considerado validado para apresentação depois de completar `documentacao/testes.md`.
+
+Próxima etapa: restaurar PHP/MySQL, importar a base de dados e executar a checklist completa.
+
+## Funcionalidade adicional — Recuperação administrativa
+
+Estado: **implementada e testada localmente em 17 de julho de 2026**.
+
+- pedido público com resposta genérica;
+- apenas um pedido pendente por conta;
+- tratamento exclusivo pelo administrador;
+- password temporária aleatória mostrada uma única vez;
+- armazenamento exclusivo da hash;
+- mudança obrigatória no primeiro login;
+- migração aplicada à base local;
+- ciclo completo testado através do Apache e MySQL do XAMPP;
+- ficheiros sincronizados entre a área de trabalho e o XAMPP.

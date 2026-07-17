@@ -779,6 +779,178 @@ form.inline-form button.btn-small {
     font-size: 1rem;
 }
 
+.participation-action,
+.login-prompt {
+    margin-top: 24px;
+}
+
+.comments-section,
+.admin-section {
+    margin-top: 42px;
+}
+
+.comments-section > h2,
+.admin-section > h2 {
+    margin-bottom: 20px;
+    color: var(--verde-escuro);
+}
+
+.comment-form {
+    width: 100%;
+    margin-bottom: 24px;
+    box-shadow: none;
+}
+
+.comments-list,
+.messages-list {
+    display: grid;
+    gap: 16px;
+}
+
+.comment,
+.message-card,
+.content-card,
+.stat-card {
+    padding: 22px;
+    border: 1px solid var(--cinza-claro);
+    border-radius: var(--raio);
+    background: var(--branco);
+}
+
+.comment header,
+.message-card header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.comment time,
+.message-card time,
+.empty-inline {
+    color: var(--cinza);
+    font-size: 0.82rem;
+}
+
+.comment .inline-form {
+    margin-top: 14px;
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--sombra);
+}
+
+.stat-card strong {
+    color: var(--verde);
+    font-size: 2.2rem;
+}
+
+.stat-card.compact strong {
+    font-size: 1.7rem;
+}
+
+.admin-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+    margin-top: 38px;
+}
+
+.admin-links .card {
+    width: 100%;
+    padding: 24px;
+    color: var(--verde-escuro);
+    font-weight: 700;
+}
+
+.admin-filter {
+    grid-template-columns: minmax(180px, 320px) auto;
+    justify-content: start;
+}
+
+.user-form {
+    align-items: center;
+    gap: 8px;
+}
+
+.user-form select,
+.inline-form select {
+    width: auto;
+    min-width: 120px;
+}
+
+.prose h2 {
+    margin-top: 30px;
+    margin-bottom: 8px;
+    color: var(--verde-escuro);
+}
+
+.prose h2:first-child {
+    margin-top: 0;
+}
+
+.prose ol {
+    padding-left: 24px;
+}
+
+.prose li + li {
+    margin-top: 8px;
+}
+
+.message-card h2 {
+    margin-top: 8px;
+    color: var(--verde-escuro);
+    font-size: 1.2rem;
+}
+
+.message-body {
+    margin-block: 18px;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--fundo);
+}
+
+.form-intro {
+    margin-bottom: 22px;
+    color: var(--cinza);
+    text-align: center;
+}
+
+.temporary-password {
+    margin-bottom: 26px;
+    padding: 24px;
+    border: 2px solid #f59e0b;
+    border-radius: var(--raio);
+    color: #713f12;
+    background: #fffbeb;
+}
+
+.temporary-password h2,
+.temporary-password p {
+    margin-bottom: 10px;
+}
+
+.temporary-password code {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border-radius: 7px;
+    color: var(--preto);
+    background: var(--branco);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.admin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 /* Rodapé */
 footer {
     color: #dbeafe;
@@ -913,6 +1085,13 @@ footer {
 
     .admin-form {
         position: static;
+    }
+
+    .comment header,
+    .message-card header,
+    .user-form {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }
 

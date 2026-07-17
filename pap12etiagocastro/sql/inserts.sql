@@ -7,11 +7,12 @@ USE banco_ideias;
 -- Foi produzida pelo equivalente a password_hash('password', PASSWORD_BCRYPT).
 -- Estas credenciais são fracas e nunca devem ser usadas em produção.
 INSERT INTO utilizador (nome, email, senha, tipo, ativo) VALUES
-    ('Administrador Demo', 'admin@bancodeideias.test', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'admin', 1),
-    ('Ana Aluna', 'ana@bancodeideias.test', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'aluno', 1),
-    ('Professor Manuel', 'manuel@bancodeideias.test', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'professor', 1)
+    ('Administrador Demo', 'admin@bancodeideias.test', '$2y$10$R.9sCR2M8OsTfGjbI6aXnuIAi1AtScApPH.Hslf/0dnEtl9OCZnh6', 'admin', 1),
+    ('Ana Aluna', 'ana@bancodeideias.test', '$2y$10$R.9sCR2M8OsTfGjbI6aXnuIAi1AtScApPH.Hslf/0dnEtl9OCZnh6', 'aluno', 1),
+    ('Professor Manuel', 'manuel@bancodeideias.test', '$2y$10$R.9sCR2M8OsTfGjbI6aXnuIAi1AtScApPH.Hslf/0dnEtl9OCZnh6', 'professor', 1)
 ON DUPLICATE KEY UPDATE
     nome = VALUES(nome),
+    senha = VALUES(senha),
     tipo = VALUES(tipo),
     ativo = VALUES(ativo);
 
@@ -118,4 +119,3 @@ SELECT u.id_utilizador, i.id_ideia
 FROM utilizador u
 JOIN ideia i ON i.titulo = 'Zona exterior com sombra'
 WHERE u.email = 'manuel@bancodeideias.test';
-

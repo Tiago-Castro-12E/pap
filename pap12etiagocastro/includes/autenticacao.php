@@ -81,3 +81,15 @@ function escapar(?string $valor): string
 
 iniciarSessaoSegura();
 
+if (!headers_sent()) {
+    header("X-Content-Type-Options: nosniff");
+    header("X-Frame-Options: SAMEORIGIN");
+    header("Referrer-Policy: strict-origin-when-cross-origin");
+}
+
+$paginaAutenticacao = basename($_SERVER["SCRIPT_NAME"] ?? "");
+if (utilizadorAutenticado()
+    && (int) ($_SESSION["forcar_troca_senha"] ?? 0) === 1
+    && !in_array($paginaAutenticacao, ["alterar-password.php", "logout.php"], true)) {
+    redirecionar("alterar-password.php");
+}

@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS utilizador (
     senha VARCHAR(255) NOT NULL,
     tipo ENUM('aluno', 'professor', 'admin') NOT NULL DEFAULT 'aluno',
     ativo TINYINT(1) NOT NULL DEFAULT 1,
+    forcar_troca_senha TINYINT(1) NOT NULL DEFAULT 0,
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT pk_utilizador PRIMARY KEY (id_utilizador),
@@ -86,3 +87,32 @@ CREATE TABLE IF NOT EXISTS voto (
     INDEX idx_voto_ideia (id_ideia)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS mensagem_contacto (
+    id_mensagem INT UNSIGNED AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(191) NOT NULL,
+    assunto VARCHAR(150) NOT NULL,
+    mensagem TEXT NOT NULL,
+    estado ENUM('Nova', 'Lida') NOT NULL DEFAULT 'Nova',
+    data_envio TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_mensagem_contacto PRIMARY KEY (id_mensagem),
+    INDEX idx_mensagem_estado_data (estado, data_envio)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS pedido_recuperacao (
+    id_pedido INT UNSIGNED AUTO_INCREMENT,
+    id_utilizador INT UNSIGNED NOT NULL,
+    estado ENUM('Pendente', 'Resolvido', 'Recusado') NOT NULL DEFAULT 'Pendente',
+    data_pedido TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_resolucao TIMESTAMP NULL DEFAULT NULL,
+    id_admin_responsavel INT UNSIGNED NULL,
+    CONSTRAINT pk_pedido_recuperacao PRIMARY KEY (id_pedido),
+    CONSTRAINT fk_recuperacao_utilizador FOREIGN KEY (id_utilizador)
+        REFERENCES utilizador (id_utilizador)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_recuperacao_admin FOREIGN KEY (id_admin_responsavel)
+        REFERENCES utilizador (id_utilizador)
+        ON UPDATE CASCADE ON DELETE SET NULL,
+    INDEX idx_recuperacao_estado_data (estado, data_pedido),
+    INDEX idx_recuperacao_utilizador (id_utilizador)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

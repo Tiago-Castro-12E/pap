@@ -30,7 +30,7 @@ Todas as contas seguintes usam temporariamente a palavra-passe `password`:
 
 As palavras-passe estão guardadas como hashes bcrypt compatíveis com `password_verify()` do PHP. Estas contas são exclusivamente de demonstração, têm uma palavra-passe intencionalmente previsível e nunca devem ser usadas em produção.
 
-O login atual do projeto ainda compara texto simples e, por isso, não autentica estas contas. Esta incompatibilidade será corrigida no Prompt 03.
+O login usa `password_verify()` e aceita estas hashes. Registos antigos que ainda contenham palavras-passe em texto simples devem ser recriados; não existe migração insegura automática.
 
 ## Integridade referencial
 
@@ -48,6 +48,7 @@ O login atual do projeto ainda compara texto simples e, por isso, não autentica
 - Registos editáveis possuem uma data de atualização automática quando aplicável.
 - Utilizadores e categorias são desativados em vez de removidos quando têm conteúdo relacionado.
 - Uma ideia pode estar `Pendente`, `Aprovada`, `Rejeitada` ou `Implementada`.
+- Mensagens do formulário de contacto ficam em `mensagem_contacto` com estado `Nova` ou `Lida`.
 
 ## Verificação pendente
 
@@ -56,6 +57,5 @@ Os scripts foram revistos estaticamente, mas ainda não foram executados porque 
 - criação de todas as tabelas e chaves estrangeiras;
 - segunda execução de `inserts.sql` sem duplicações;
 - autenticação das três contas depois do Prompt 03;
-- resultados das dez consultas de referência;
+- resultados das dez consultas de referência e consulta administrativa das mensagens;
 - compatibilidade exata com a versão de MySQL/MariaDB instalada no XAMPP.
-

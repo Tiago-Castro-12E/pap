@@ -89,7 +89,8 @@ SELECT
     (SELECT COUNT(*) FROM categoria WHERE ativa = 1) AS categorias_ativas,
     (SELECT COUNT(*) FROM ideia) AS total_ideias,
     (SELECT COUNT(*) FROM comentario) AS total_comentarios,
-    (SELECT COUNT(*) FROM voto) AS total_votos;
+    (SELECT COUNT(*) FROM voto) AS total_votos,
+    (SELECT COUNT(*) FROM mensagem_contacto WHERE estado = 'Nova') AS mensagens_novas;
 
 -- 8. Número de ideias por estado para o dashboard.
 SELECT estado, COUNT(*) AS total
@@ -116,4 +117,3 @@ SELECT EXISTS (
     WHERE id_utilizador = @id_utilizador
       AND id_ideia = @id_ideia
 ) AS ja_votou;
-

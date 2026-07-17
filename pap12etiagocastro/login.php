@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || $senha === "") {
         $erro = "Email ou palavra-passe inválidos.";
     } else {
-        $sql = "SELECT id_utilizador, nome, email, senha, tipo, ativo
+        $sql = "SELECT id_utilizador, nome, email, senha, tipo, ativo, forcar_troca_senha
                 FROM utilizador
                 WHERE email = ?
                 LIMIT 1";
@@ -41,9 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["id_utilizador"] = (int) $utilizador["id_utilizador"];
                 $_SESSION["nome"] = $utilizador["nome"];
                 $_SESSION["tipo"] = $utilizador["tipo"];
+                $_SESSION["forcar_troca_senha"] = (int) $utilizador["forcar_troca_senha"];
                 unset($_SESSION["csrf_token"]);
 
-                redirecionar("index.php");
+                redirecionar((int) $utilizador["forcar_troca_senha"] === 1 ? "alterar-password.php" : "index.php");
             }
         } else {
             error_log("Não foi possível preparar a consulta de login: " . mysqli_error($ligacao));
@@ -93,6 +94,7 @@ include __DIR__ . "/includes/menu.php";
             <button type="submit">Entrar</button>
         </form>
 
+        <p><a href="<?php echo $baseUrl; ?>/recuperar-password.php">Esqueci-me da palavra-passe</a></p>
         <p>Ainda não tens conta? <a href="<?php echo $baseUrl; ?>/registar.php">Regista-te</a></p>
     </div>
 </main>

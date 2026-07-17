@@ -32,9 +32,9 @@
 
             <h4>Contacto</h4>
 
-            <p>Email: geral@bancodeideias.pt</p>
+            <p><a href="<?php echo $baseUrl; ?>/contactos.php">Enviar uma mensagem</a></p>
 
-            <p>Escola Profissional</p>
+            <p>Projeto de Prova de Aptidão Profissional</p>
 
         </div>
 

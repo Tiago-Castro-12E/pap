@@ -45,6 +45,10 @@ include __DIR__ . "/includes/menu.php";
     <div class="container">
         <h1>O meu perfil</h1>
 
+        <?php if (($_GET["estado"] ?? "") === "password-alterada"): ?>
+            <div class="sucesso" role="status">Palavra-passe alterada com sucesso.</div>
+        <?php endif; ?>
+
         <div class="perfil-card">
             <p><strong>Nome:</strong> <?php echo escapar($utilizador["nome"]); ?></p>
             <p><strong>Email:</strong> <?php echo escapar($utilizador["email"]); ?></p>
