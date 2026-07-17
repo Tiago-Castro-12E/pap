@@ -1,4 +1,9 @@
-<?php include "includes/menu.php"; ?>
+<?php
+$tituloPagina = "Início | Banco de Ideias";
+include __DIR__ . "/includes/menu.php";
+?>
+
+<main>
 
 <section class="hero">
 
@@ -25,25 +30,19 @@ propostas para melhorar a escola e a freguesia.
 
 <div class="hero-buttons">
 
-<a href="ideias.php" class="btn">
+<a href="<?php echo $baseUrl; ?>/ideias.php" class="btn btn-primary">
 
 Explorar Ideias
 
 </a>
 
-<a href="submeter.php" class="btn btn-outline">
+<a href="<?php echo $baseUrl; ?>/submeter.php" class="btn btn-outline">
 
 Submeter Ideia
 
 </a>
 
 </div>
-
-</div>
-
-<div class="hero-image">
-
-<img src="imagens/hero.png" alt="Banco de Ideias">
 
 </div>
 
@@ -57,11 +56,7 @@ Submeter Ideia
 
 <div class="feature">
 
-<div class="icon">
-
-💡
-
-</div>
+<div class="icon" aria-hidden="true">&#128161;</div>
 
 <h3>
 
@@ -79,11 +74,7 @@ Submete ideias para melhorar a escola e a comunidade.
 
 <div class="feature">
 
-<div class="icon">
-
-👍
-
-</div>
+<div class="icon" aria-hidden="true">&#128077;</div>
 
 <h3>
 
@@ -101,11 +92,7 @@ Apoia as melhores ideias apresentadas pelos utilizadores.
 
 <div class="feature">
 
-<div class="icon">
-
-💬
-
-</div>
+<div class="icon" aria-hidden="true">&#128172;</div>
 
 <h3>
 
@@ -139,4 +126,6 @@ Participa na discussão e ajuda a melhorar cada proposta.
 
 </section>
 
-<?php include "includes/footer.php"; ?>
+</main>
+
+<?php include __DIR__ . "/includes/footer.php"; ?>

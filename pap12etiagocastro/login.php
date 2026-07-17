@@ -1,127 +1,100 @@
 <?php
 
-session_start();
-include "includes/ligaBD.php";
+require_once __DIR__ . "/includes/autenticacao.php";
+require_once __DIR__ . "/includes/ligaBD.php";
+
+if (utilizadorAutenticado()) {
+    redirecionar("index.php");
+}
 
 $erro = "";
+$email = "";
+$registoConcluido = ($_GET["registo"] ?? "") === "sucesso";
 
-if(isset($_POST["login"])){
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = trim($_POST["email"] ?? "");
+    $senha = $_POST["senha"] ?? "";
 
-    $email = mysqli_real_escape_string($ligacao, $_POST["email"]);
-    $senha = mysqli_real_escape_string($ligacao, $_POST["senha"]);
+    if (!tokenCsrfValido($_POST["csrf_token"] ?? null)) {
+        $erro = "O formulário expirou. Atualiza a página e tenta novamente.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || $senha === "") {
+        $erro = "Email ou palavra-passe inválidos.";
+    } else {
+        $sql = "SELECT id_utilizador, nome, email, senha, tipo, ativo
+                FROM utilizador
+                WHERE email = ?
+                LIMIT 1";
+        $stmt = mysqli_prepare($ligacao, $sql);
 
-    $sql = "SELECT * FROM utilizador WHERE email='$email'";
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $email);
+            mysqli_stmt_execute($stmt);
+            $resultado = mysqli_stmt_get_result($stmt);
+            $utilizador = mysqli_fetch_assoc($resultado) ?: null;
+            mysqli_stmt_close($stmt);
 
-    $resultado = mysqli_query($ligacao, $sql);
+            if ($utilizador
+                && (int) $utilizador["ativo"] === 1
+                && password_verify($senha, $utilizador["senha"])) {
+                session_regenerate_id(true);
 
-    if(mysqli_num_rows($resultado) == 1){
+                $_SESSION["id_utilizador"] = (int) $utilizador["id_utilizador"];
+                $_SESSION["nome"] = $utilizador["nome"];
+                $_SESSION["tipo"] = $utilizador["tipo"];
+                unset($_SESSION["csrf_token"]);
 
-        $utilizador = mysqli_fetch_assoc($resultado);
-
-        if($senha == $utilizador["senha"]){
-
-            $_SESSION["id_utilizador"] = $utilizador["id_utilizador"];
-            $_SESSION["nome"] = $utilizador["nome"];
-            $_SESSION["tipo"] = $utilizador["tipo"];
-
-            header("Location: index.php");
-            exit();
-
-        }else{
-
-            $erro = "Palavra-passe incorreta.";
-
+                redirecionar("index.php");
+            }
+        } else {
+            error_log("Não foi possível preparar a consulta de login: " . mysqli_error($ligacao));
         }
 
-    }else{
-
-        $erro = "O utilizador não existe.";
-
+        $erro = "Email ou palavra-passe inválidos.";
     }
-
 }
 
+$tituloPagina = "Iniciar sessão | Banco de Ideias";
+include __DIR__ . "/includes/menu.php";
 ?>
 
-<!DOCTYPE html>
+<main class="page">
+    <div class="login-box">
+        <h1>Iniciar sessão</h1>
 
-<html lang="pt">
+        <?php if ($registoConcluido): ?>
+            <div class="sucesso" role="status">Conta criada com sucesso. Já podes iniciar sessão.</div>
+        <?php endif; ?>
 
-<head>
+        <?php if ($erro !== ""): ?>
+            <div class="erro" role="alert"><?php echo escapar($erro); ?></div>
+        <?php endif; ?>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <form method="post" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo escapar(tokenCsrf()); ?>">
 
-<title>Login</title>
+            <label for="email">Email</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value="<?php echo escapar($email); ?>"
+                autocomplete="email"
+                maxlength="191"
+                required>
 
-<link rel="stylesheet" href="css/style.css">
+            <label for="senha">Palavra-passe</label>
+            <input
+                type="password"
+                id="senha"
+                name="senha"
+                autocomplete="current-password"
+                required>
 
-</head>
+            <button type="submit">Entrar</button>
+        </form>
 
-<body>
+        <p>Ainda não tens conta? <a href="<?php echo $baseUrl; ?>/registar.php">Regista-te</a></p>
+    </div>
+</main>
 
-<?php include "includes/menu.php"; ?>
-
-<section class="page">
-
-<div class="login-box">
-
-<h1>Iniciar Sessão</h1>
-
-<?php
-
-if($erro!=""){
-
-echo "<div class='erro'>$erro</div>";
-
-}
-
-?>
-
-<form method="POST">
-
-<label>Email</label>
-
-<input
-type="email"
-name="email"
-required>
-
-<label>Palavra-passe</label>
-
-<input
-type="password"
-name="senha"
-required>
-
-<button
-type="submit"
-name="login">
-
-Entrar
-
-</button>
-
-</form>
-
-<p>
-
-Ainda não tens conta?
-
-<a href="registar.php">
-
-Regista-te
-
-</a>
-
-</p>
-
-</div>
-
-</section>
-
-<?php include "includes/footer.php"; ?>
-
-</body>
-
-</html>
+<?php include __DIR__ . "/includes/footer.php"; ?>

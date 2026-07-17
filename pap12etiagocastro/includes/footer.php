@@ -19,10 +19,10 @@
 
             <ul>
 
-                <li><a href="index.php">Início</a></li>
-                <li><a href="sobre.php">Sobre</a></li>
-                <li><a href="ideias.php">Ideias</a></li>
-                <li><a href="contactos.php">Contactos</a></li>
+                <li><a href="<?php echo $baseUrl; ?>/index.php">Início</a></li>
+                <li><a href="<?php echo $baseUrl; ?>/sobre.php">Sobre</a></li>
+                <li><a href="<?php echo $baseUrl; ?>/ideias.php">Ideias</a></li>
+                <li><a href="<?php echo $baseUrl; ?>/contactos.php">Contactos</a></li>
 
             </ul>
 
@@ -47,3 +47,6 @@
     </div>
 
 </footer>
+
+</body>
+</html>

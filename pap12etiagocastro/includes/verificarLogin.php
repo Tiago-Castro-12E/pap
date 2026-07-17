@@ -1,12 +1,5 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/autenticacao.php";
+exigirLogin();
 
-if (!isset($_SESSION["id_utilizador"])) {
-
-    header("Location: /pap12etiagocastro/login.php");
-    exit();
-
-}
-
-?>

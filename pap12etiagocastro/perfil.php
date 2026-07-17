@@ -1,39 +1,61 @@
 <?php
 
-include "includes/verificarLogin.php";
-include "includes/ligaBD.php";
-include "includes/menu.php";
+require_once __DIR__ . "/includes/verificarLogin.php";
+require_once __DIR__ . "/includes/ligaBD.php";
 
-$id = $_SESSION["id_utilizador"];
+$idUtilizador = (int) $_SESSION["id_utilizador"];
+$stmt = mysqli_prepare(
+    $ligacao,
+    "SELECT id_utilizador, nome, email, tipo, ativo, data_criacao
+     FROM utilizador
+     WHERE id_utilizador = ?
+     LIMIT 1"
+);
 
-$sql = "SELECT * FROM utilizador WHERE id_utilizador='$id'";
+if (!$stmt) {
+    error_log("Não foi possível preparar a consulta do perfil: " . mysqli_error($ligacao));
+    http_response_code(500);
+    exit("Não foi possível carregar o perfil.");
+}
 
-$resultado = mysqli_query($ligacao,$sql);
+mysqli_stmt_bind_param($stmt, "i", $idUtilizador);
+mysqli_stmt_execute($stmt);
+$resultado = mysqli_stmt_get_result($stmt);
+$utilizador = mysqli_fetch_assoc($resultado) ?: null;
+mysqli_stmt_close($stmt);
 
-$utilizador = mysqli_fetch_assoc($resultado);
+if (!$utilizador || (int) $utilizador["ativo"] !== 1) {
+    $_SESSION = [];
+    session_destroy();
+    redirecionar("login.php");
+}
 
+$tiposUtilizador = [
+    "aluno" => "Aluno",
+    "professor" => "Professor",
+    "admin" => "Administrador",
+];
+$tipoApresentado = $tiposUtilizador[$utilizador["tipo"]] ?? "Utilizador";
+
+$tituloPagina = "O meu perfil | Banco de Ideias";
+include __DIR__ . "/includes/menu.php";
 ?>
 
-<section class="page">
+<main class="page">
+    <div class="container">
+        <h1>O meu perfil</h1>
 
-<div class="container">
+        <div class="perfil-card">
+            <p><strong>Nome:</strong> <?php echo escapar($utilizador["nome"]); ?></p>
+            <p><strong>Email:</strong> <?php echo escapar($utilizador["email"]); ?></p>
+            <p><strong>Tipo:</strong> <?php echo escapar($tipoApresentado); ?></p>
 
-<h1>O Meu Perfil</h1>
+            <form method="post" action="<?php echo $baseUrl; ?>/logout.php">
+                <input type="hidden" name="csrf_token" value="<?php echo escapar(tokenCsrf()); ?>">
+                <button type="submit" class="btn">Terminar sessão</button>
+            </form>
+        </div>
+    </div>
+</main>
 
-<div class="perfil-card">
-
-<p><strong>Nome:</strong> <?php echo $utilizador['nome']; ?></p>
-
-<p><strong>Email:</strong> <?php echo $utilizador['email']; ?></p>
-
-<p><strong>Tipo:</strong> <?php echo ucfirst($utilizador['tipo']); ?></p>
-
-<a href="logout.php" class="btn">Terminar Sessão</a>
-
-</div>
-
-</div>
-
-</section>
-
-<?php include "includes/footer.php"; ?>
+<?php include __DIR__ . "/includes/footer.php"; ?>
