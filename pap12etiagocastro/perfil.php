@@ -37,6 +37,30 @@ $tiposUtilizador = [
 ];
 $tipoApresentado = $tiposUtilizador[$utilizador["tipo"]] ?? "Utilizador";
 
+$minhasIdeias = [];
+$stmt = mysqli_prepare(
+    $ligacao,
+    "SELECT i.id_ideia, i.titulo, i.estado, i.data_submissao, c.nome_categoria,
+            (SELECT COUNT(*) FROM voto v WHERE v.id_ideia = i.id_ideia) AS total_votos,
+            (SELECT COUNT(*) FROM comentario co WHERE co.id_ideia = i.id_ideia) AS total_comentarios
+     FROM ideia i
+     JOIN categoria c ON c.id_categoria = i.id_categoria
+     WHERE i.id_utilizador = ?
+     ORDER BY i.data_submissao DESC"
+);
+
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $idUtilizador);
+    mysqli_stmt_execute($stmt);
+    $resultadoIdeias = mysqli_stmt_get_result($stmt);
+    while ($ideia = mysqli_fetch_assoc($resultadoIdeias)) {
+        $minhasIdeias[] = $ideia;
+    }
+    mysqli_stmt_close($stmt);
+} else {
+    error_log("Não foi possível carregar as ideias do perfil: " . mysqli_error($ligacao));
+}
+
 $tituloPagina = "O meu perfil | Banco de Ideias";
 include __DIR__ . "/includes/menu.php";
 ?>
@@ -59,6 +83,55 @@ include __DIR__ . "/includes/menu.php";
                 <button type="submit" class="btn">Terminar sessão</button>
             </form>
         </div>
+
+        <section class="profile-ideas" aria-labelledby="minhas-ideias-titulo">
+            <div class="section-heading heading-actions">
+                <div>
+                    <span class="eyebrow">Participação</span>
+                    <h2 id="minhas-ideias-titulo">As minhas ideias</h2>
+                    <p>Acompanha o estado e a participação nas propostas que submeteste.</p>
+                </div>
+                <a href="<?php echo $baseUrl; ?>/submeter.php" class="btn">Nova ideia</a>
+            </div>
+
+            <?php if (!$minhasIdeias): ?>
+                <div class="empty-state">
+                    <h2>Ainda não submeteste ideias</h2>
+                    <p>Quando apresentares uma proposta, ela aparecerá aqui.</p>
+                    <a href="<?php echo $baseUrl; ?>/submeter.php" class="btn">Submeter a primeira ideia</a>
+                </div>
+            <?php else: ?>
+                <div class="ideas-grid profile-ideas-grid">
+                    <?php foreach ($minhasIdeias as $ideia): ?>
+                        <?php
+                        $classeEstado = match ($ideia["estado"]) {
+                            "Aprovada" => "badge-info",
+                            "Implementada" => "badge-success",
+                            "Rejeitada" => "badge-muted",
+                            default => "badge-warning",
+                        };
+                        ?>
+                        <article class="idea-card">
+                            <div class="idea-card-topline">
+                                <span class="badge"><?php echo escapar($ideia["nome_categoria"]); ?></span>
+                                <span class="badge <?php echo $classeEstado; ?>"><?php echo escapar($ideia["estado"]); ?></span>
+                            </div>
+                            <h2><a href="<?php echo $baseUrl; ?>/ideia.php?id=<?php echo (int) $ideia["id_ideia"]; ?>"><?php echo escapar($ideia["titulo"]); ?></a></h2>
+                            <div class="idea-meta">
+                                <time datetime="<?php echo escapar($ideia["data_submissao"]); ?>">
+                                    Submetida em <?php echo date("d/m/Y", strtotime($ideia["data_submissao"])); ?>
+                                </time>
+                            </div>
+                            <div class="idea-stats" aria-label="Participação na ideia">
+                                <span>&#128077; <?php echo (int) $ideia["total_votos"]; ?> votos</span>
+                                <span>&#128172; <?php echo (int) $ideia["total_comentarios"]; ?> comentários</span>
+                            </div>
+                            <a class="card-link" href="<?php echo $baseUrl; ?>/ideia.php?id=<?php echo (int) $ideia["id_ideia"]; ?>">Ver detalhes</a>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
     </div>
 </main>
 

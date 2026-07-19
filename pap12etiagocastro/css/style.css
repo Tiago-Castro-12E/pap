@@ -475,6 +475,28 @@ form:not(.logout-form) button[type="submit"] {
     margin-top: 24px;
 }
 
+.profile-ideas {
+    margin-top: clamp(48px, 7vw, 80px);
+}
+
+.section-heading {
+    margin-bottom: 26px;
+}
+
+.section-heading h2 {
+    margin-bottom: 6px;
+    color: var(--verde-escuro);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.section-heading p {
+    color: var(--cinza);
+}
+
+.profile-ideas-grid .idea-card > h2 {
+    flex-grow: 1;
+}
+
 /* Tabelas e elementos futuros da administração */
 .table-responsive {
     overflow-x: auto;
@@ -619,10 +641,11 @@ form.inline-form button.btn-small {
     background: #e2e8f0;
 }
 
-.filters-card {
+form.filters-card {
     display: grid;
     grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(150px, 1fr)) auto;
     align-items: end;
+    flex-direction: initial;
     gap: 16px;
     margin-bottom: 28px;
 }
@@ -1016,7 +1039,7 @@ footer {
         grid-column: 1 / -1;
     }
 
-    .filters-card {
+    form.filters-card {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -1078,7 +1101,7 @@ footer {
     }
 
     .admin-layout,
-    .filters-card,
+    form.filters-card,
     .ideas-grid {
         grid-template-columns: 1fr;
     }
